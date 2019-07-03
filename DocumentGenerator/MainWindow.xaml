@@ -1,0 +1,232 @@
+﻿<Window x:Class="DocumentGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        mc:Ignorable="d"
+        FontSize="14"
+        Title="Document Generator" WindowStartupLocation="CenterScreen" SizeToContent="Height" Width="800" ResizeMode="CanMinimize" Loaded="MainWindow_OnLoaded" Closing="MainWindow_OnClosing">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"></Setter>
+            <Setter Property="Foreground" Value="DimGray"></Setter>
+            <Setter Property="Margin" Value="0 0 0 5"></Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="3"></Setter>
+            <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0 0 0 7"></Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0 0 10 0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Text="ОГРН:"></TextBlock>
+                <TextBox Grid.Row="1" x:Name="RegistrationNumber" TextChanged="Applicant_OnTextChanged"/>
+            </Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Наименование заявителя:"></TextBlock>
+                <TextBox Grid.Row="1" x:Name="ApplicantName" TextChanged="Applicant_OnTextChanged"/>
+            </Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Text="ФИО руководителя заявителя:"></TextBlock>
+                <TextBox Grid.Row="1" x:Name="ApplicantFio" TextChanged="Manufacturer_OnTextChanged"></TextBox>
+            </Grid>
+        </StackPanel>
+        <Grid Grid.Row="0" Grid.Column="1" Margin="10 0 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Наименование производителя:"></TextBlock>
+                    <TextBox Grid.Row="1" x:Name="ManufacturerName" TextChanged="Manufacturer_OnTextChanged"/>
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Страна производителя на англ.:"></TextBlock>
+                    <TextBox Grid.Row="1" x:Name="ManufacturerCountry" TextChanged="Manufacturer_OnTextChanged"></TextBox>
+                </Grid>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0" Margin="0 0 10 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Margin="0 0 5 0">
+                <TextBlock Text="Печать заявителя:"></TextBlock>
+                <StackPanel Margin="0 0 0 5" Orientation="Horizontal">
+                    <RadioButton x:Name="CreateApplicantStampRadioButton" Margin="0 0 2 0" FontSize="12" VerticalAlignment="Center" Checked="CreateApplicantStamp_OnChecked" Content="Новая"></RadioButton>
+                    <RadioButton Margin="2 0 0 0" FontSize="12" VerticalAlignment="Center" Checked="LoadApplicantStamp_OnChecked" Content="Из файла"></RadioButton>
+                </StackPanel>
+                <Grid x:Name="ApplicantStampGrid" Margin="0 0 0 7" Width="120" Height="120" Background="LightGray" Cursor="Hand" ToolTip="Выгрузить печать заявителя" MouseLeftButtonDown="ApplicantStamp_OnMouseLeftButtonDown">
+                    <Viewbox x:Name="NoApplicantStamp" Width="30" Height="30" Visibility="Collapsed">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" Fill="DimGray" />
+                        </Canvas>
+                    </Viewbox>
+                    <WindowsFormsHost x:Name="ApplicantStampHost" Background="White" Width="120" Height="120" Cursor="Hand">
+                        <forms:PictureBox Width="120" Height="120" SizeMode="Zoom" x:Name="ApplicantStamp" Click="ApplicantStamp_OnClick"></forms:PictureBox>
+                    </WindowsFormsHost>
+                </Grid>
+                <Button x:Name="ApplicantStampButton" Height="25" Content="Выгрузить" Click="DownloadApplicantStamp_OnClick"></Button>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5 0 0 0">
+                <TextBlock Text="Подпись заявителя:"></TextBlock>
+                <Grid x:Name="ApplicantSignature" Margin="0 0 0 7" Width="240" Height="140" Background="LightGray" Cursor="Hand" ToolTip="Загрузить подпись заявителя" MouseLeftButtonDown="ApplicantSignature_OnMouseLeftButtonDown">
+                    <Viewbox x:Name="NoApplicantSignature" Width="30" Height="30" >
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" Fill="DimGray" />
+                        </Canvas>
+                    </Viewbox>
+                    <WindowsFormsHost x:Name="ApplicantSignatureHost" Width="240" Height="140" Background="White" Visibility="Collapsed" ToolTip="Загрузить подпись заявителя">
+                        <forms:PictureBox x:Name="ApplicantSignatureImage" Width="240" Height="140" SizeMode="Zoom" Click="ApplicantSignatureImage_OnClick"></forms:PictureBox>
+                    </WindowsFormsHost>
+                </Grid>
+                <Button Content="Загрузить" Height="25" Click="ApplicantSignature_OnClick"></Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1" Margin="10 0 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Margin="0 0 5 0">
+                <TextBlock Text="Печать производителя:"></TextBlock>
+                <StackPanel Margin="0 0 0 5" Orientation="Horizontal">
+                    <RadioButton x:Name="CreateManufacturerStampRadioButton" Margin="0 0 2 0" FontSize="12" VerticalAlignment="Center" Checked="CreateManufacturerStamp_OnChecked" Content="Новая"></RadioButton>
+                    <RadioButton Margin="2 0 0 0" FontSize="12" VerticalAlignment="Center" Checked="LoadManufacturerStamp_OnChecked" Content="Из файла"></RadioButton>
+                </StackPanel>
+                <Grid x:Name="ManufacturerStampGrid" Margin="0 0 0 7" Width="200" Height="120" Background="LightGray" Cursor="Hand" ToolTip="Выгрузить печать заявителя" MouseLeftButtonDown="ManufacturerStamp_OnMouseLeftButtonDown">
+                    <Viewbox x:Name="NoManufacturerStamp" Width="30" Height="30" Visibility="Collapsed">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" Fill="DimGray" />
+                        </Canvas>
+                    </Viewbox>
+                    <WindowsFormsHost x:Name="ManufacturerStampHost" Background="White" Width="200" Height="120" Cursor="Hand">
+                        <forms:PictureBox x:Name="ManufacturerStamp" SizeMode="Zoom" Width="200" Height="120" Click="ManufacturerStamp_OnClick"></forms:PictureBox>
+                    </WindowsFormsHost>
+                </Grid>
+                <Button x:Name="ManufacturerStampButton" Height="25" Content="Выгрузить" Click="DownloadManufacturerStamp_OnClick"></Button>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5 0 0 0">
+                <TextBlock Text="Подпись производителя:"></TextBlock>
+                <Grid x:Name="ManufacturerSignature" Margin="0 0 0 7" Width="167" Height="140" Background="LightGray" Cursor="Hand" ToolTip="Загрузить подпись заявителя" MouseLeftButtonDown="ManufacturerSignature_OnMouseLeftButtonDown">
+                    <Viewbox x:Name="NoManufacturerSignature" Width="30" Height="30">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" Fill="DimGray" />
+                        </Canvas>
+                    </Viewbox>
+                    <WindowsFormsHost x:Name="ManufacturerSignatureHost" Background="White" Width="167" Height="140" Visibility="Collapsed" ToolTip="Загрузить подпись заявителя">
+                        <forms:PictureBox x:Name="ManufacturerSignatureImage" Width="167" Height="140" SizeMode="Zoom" Click="ManufacturerSignatureImage_OnClick"></forms:PictureBox>
+                    </WindowsFormsHost>
+                </Grid>
+                <Button Content="Загрузить" Height="25" Click="ManufacturerSignature_OnClick"></Button>
+            </StackPanel>
+        </Grid>
+        <StackPanel Margin="0 20 0 0" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="140"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Документ ПИ:"></TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="TestReport" Margin="0 0 7 7"></TextBox>
+                <Button Grid.Row="1" Grid.Column="1" Height="27" Margin="0 0 7 0" VerticalAlignment="Top" Content="Загрузить ПИ" Click="LoadTestReport"></Button>
+                <Button Grid.Row="1" Grid.Column="2" Height="27" VerticalAlignment="Top" Content="Выгрузить ПИ" Click="DownloadTestReport_OnClick"></Button>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="140"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Документ ОГРН:"></TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="RegistrationDocument" Margin="0 0 7 7"></TextBox>
+                <Button Grid.Row="1" Grid.Column="1" Height="27" Margin="0 0 7 0" VerticalAlignment="Top" Content="Загрузить ОГРН" Click="LoadRegistrationDocument"></Button>
+                <Button Grid.Row="1" Grid.Column="2" Height="27" VerticalAlignment="Top" Content="Выгрузить ОГРН" Click="DownloadRegistrationDocument_OnClick"></Button>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="140"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Документ ИНН:"></TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="Inn" Margin="0 0 7 7"></TextBox>
+                <Button Grid.Row="1" Grid.Column="1" Height="27" Margin="0 0 7 0" VerticalAlignment="Top" Content="Загрузить ИНН" Click="LoadInn"></Button>
+                <Button Grid.Row="1" Grid.Column="2" Height="27" VerticalAlignment="Top" Content="Выгрузить ИНН" Click="DownloadInn_OnClick"></Button>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="140"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text=" Документ макета:"></TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="ModelDocument" Margin="0 0 7 0"></TextBox>
+                <Button Grid.Row="1" Grid.Column="1" Height="27" Margin="0 0 7 0" VerticalAlignment="Top" Content="Загрузить МАКЕТ" Click="LoadModelDocument"></Button>
+                <Button Grid.Row="1" Grid.Column="2" Height="27" VerticalAlignment="Top" Content="Выгрузить МАКЕТ" Click="DownloadModelDocument_OnClick"></Button>
+            </Grid>
+            <Grid Margin="0 20 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Выгрузить ДУЛ" Margin="0 0 5 0" Height="40" Click="DownloadAuthorizedСontract_OnClick"></Button>
+                <Button Grid.Column="1" Content="Выгрузить все документы" Margin="5 0 5 0" Click="DownloadAllDocuments_OnClick" ToolTip="Нажмите, чтобы выбрать папку и выгрузить в неё ДУЛ, ПИ, ОГРН, ИНН и МАКЕТ"></Button>
+                <Button Grid.Column="2" Content="Сбросить всё" Margin="5 0 0 0" Click="Reset_OnClick"></Button>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
